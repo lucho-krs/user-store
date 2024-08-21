@@ -1,5 +1,5 @@
 import { UserModel } from '../../data';
-import { CustomError, RegisterUserDTO } from '../../domain/';
+import { CustomError, RegisterUserDTO, UserEntity } from '../../domain/';
 
 export class AuthService {
 
@@ -9,7 +9,19 @@ export class AuthService {
         const existUser = await UserModel.findOne({ email: registerUserDTO.email });
         if ( existUser ) throw CustomError.badRequest( 'Email already exist' );
 
-        return 'OK!'
+        try {
+            const user = new UserModel( registerUserDTO );
+            await user.save();
+
+            const { password, ...rest } = UserEntity.fromObject( user );
+
+            return {
+                user: rest,
+                token: 'tokendoomy'
+            };
+        } catch ( error ) {
+            throw CustomError.internalServer(`${ error }`);
+        };
     };
 
 };
