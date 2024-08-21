@@ -1,5 +1,6 @@
 import { UserModel } from '../../data';
 import { CustomError, RegisterUserDTO, UserEntity } from '../../domain/';
+import { bcryptAdapter } from '../../config/bcrypt.adapter';
 
 export class AuthService {
 
@@ -11,6 +12,7 @@ export class AuthService {
 
         try {
             const user = new UserModel( registerUserDTO );
+            user.password = bcryptAdapter.hash( registerUserDTO.password );
             await user.save();
 
             const { password, ...rest } = UserEntity.fromObject( user );
