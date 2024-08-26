@@ -17,10 +17,13 @@ export class AuthService {
             await user.save();
 
             const { password, ...rest } = UserEntity.fromObject( user );
+            
+            const token = await JwtAdapter.generateToken({ id: user.id });
+            if ( !token ) throw CustomError.internalServer( 'Error while creating JWT' );
 
             return {
                 user: rest,
-                token: 'tokendoomy'
+                token
             };
         } catch ( error ) {
             throw CustomError.internalServer(`${ error }`);
