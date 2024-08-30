@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ProductController } from './controller';
 import { AuthMiddleware } from '../middleware/auth.middleware';
+import { ProductService } from '../services/product.service';
 
 export class ProductRoutes {
 
@@ -8,7 +9,8 @@ export class ProductRoutes {
 
         const router = Router();
 
-        const controller = new ProductController();
+        const productService = new ProductService();
+        const controller = new ProductController( productService );
         
         router.get( '/', controller.getProducts );
         router.post( '/', AuthMiddleware.validateJWT, controller.createProduct );
