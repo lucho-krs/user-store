@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { CreateProductDTO, CustomError, PaginationDTO } from '../../domain';
-import { ProductService } from '../services/product.service';
+import { CustomError } from '../../domain';
+import { FileUploadService } from '../services/file-upload.service';
+import { UploadedFile } from 'express-fileupload';
 
 export class FileUploadController {
 
     constructor(
-        // public readonly productService: ProductService
+        public readonly fileUploadService: FileUploadService
     ) {};
 
     private handleError = ( error: unknown, res: Response ) => {
@@ -18,7 +19,17 @@ export class FileUploadController {
     };
 
     uploadFile = ( req: Request, res: Response ) => {
-        res.json('uploadFile');
+        const files = req.files;
+
+        if ( !req.files || Object.keys( req.files).length === 0 ) {
+            return res.status( 404 ).json({ error: 'No files were selected' });
+        };
+
+        const file = req.files.file as UploadedFile;
+
+        this.fileUploadService.uploadSingle( file )
+            .then( uploaded => res.json( uploaded ) )
+            .catch( error => this.handleError( error, res ) );
     };
 
     uploadMultiFiles = async( req: Request, res: Response ) => {

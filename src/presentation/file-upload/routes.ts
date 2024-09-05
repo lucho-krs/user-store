@@ -1,3 +1,4 @@
+import { FileUploadService } from './../services/file-upload.service';
 import { Router } from 'express';
 import { FileUploadController } from './controller';
 
@@ -7,7 +8,8 @@ export class FileUploadRoutes {
 
         const router = Router();
 
-        const controller = new FileUploadController( );
+        const fileUploadService = new FileUploadService();
+        const controller = new FileUploadController( fileUploadService );
         
         router.post( '/single/:type', controller.uploadFile );
         router.post( '/multiple/:type', controller.uploadMultiFiles );
