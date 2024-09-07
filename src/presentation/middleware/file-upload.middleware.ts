@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 export class FileUploadMiddleware {
 
-    static async containFiles( req: Request, res: Response, next: NextFunction ) {
+    static containFiles( req: Request, res: Response, next: NextFunction ) {
         if ( !req.files || Object.keys( req.files).length === 0 ) {
             return res.status( 404 ).json({ error: 'No files were selected' });
         };
